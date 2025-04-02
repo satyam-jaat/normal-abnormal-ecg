@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECG Classifier</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /* height: 100vh; */
+            background-color: #9a9090;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            margin: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* 
+        input {
+            margin: 10px 0;
+        } */
+
+        /* button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        } */
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* From Uiverse.io by LilaRest */
+        .card {
+            margin: 50px;
+            width: 450px;
+            --bg: #e8e8e8;
+            --contrast: #d5cece;
+            --grey: #84a0a0;
+            position: relative;
+            padding: 9px;
+            background-color: var(--bg);
+            border-radius: 35px;
+            box-shadow: rgba(50, 50, 93, 0.42) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-conic-gradient(var(--bg) 0.0000001%, var(--grey) 0.000104%) 60% 60%/600% 600%;
+            filter: opacity(10%) contrast(105%);
+        }
+
+        .card-inner {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* width: 190px; */
+            height: 100%;
+            background-color: var(--contrast);
+            border-radius: 30px;
+            /* Content style */
+            font-size: 30px;
+            font-weight: 900;
+            color: #504d4d;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .card-upload {
+            height: 150px;
+        }
+
+        .card-source {
+            height: 60px;
+            margin: 0px;
+            margin-top: 90px;
+            margin-left: 45px;
+            width: 92%;
+        }
+
+        .card-file {
+            margin-left: 0px;
+        }
+
+        .card-result {
+            height: 360px;
+        }
+
+        .card1 {
+            margin: 50px;
+            width: 900px;
+            height: 595px;
+            --bg: #e8e8e8;
+            --contrast: #d5cece;
+            --grey: #84a0a0;
+            position: relative;
+            padding: 9px;
+            background-color: var(--bg);
+            border-radius: 35px;
+            box-shadow: rgba(30, 30, 55, 0.352) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Prevent content from overflowing */
+            box-sizing: border-box;
+            /* Include padding and borders in width/height */
+        }
+
+        .card-inner1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            /* Fill the entire container */
+            background-color: var(--contrast);
+            border-radius: 30px;
+            font-size: 30px;
+            font-weight: 900;
+            color: #504d4d;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .card1 img {
+            max-width: 100%;
+            /* Ensure the image scales within the container */
+            height: auto;
+            /* Maintain aspect ratio */
+        }
+
+        .love {
+            margin-top: 80px;
+            margin-left: 80px;
+        }
+
+        /* From Uiverse.io by barisdogansutcu */
+        .love-heart:before,
+        #switch {
+            display: none;
+        }
+
+        .love-heart,
+        .love-heart::after {
+            border-color: hsl(231deg 28% 86%);
+            border: 1px solid;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            width: 10px;
+            height: 8px;
+            border-bottom: 0
+        }
+
+        .round {
+            position: absolute;
+            z-index: 1;
+            width: 8px;
+            height: 8px;
+            background: hsl(0deg 0% 100%);
+            box-shadow: rgb(0 0 0 / 24%) 0px 0px 4px 0px;
+            border-radius: 100%;
+            left: 0px;
+            bottom: -1px;
+            transition: all .5s ease;
+            animation: check-animation2 .5s forwards;
+        }
+
+        input:checked+label .round {
+            transform: translate(0px, 0px);
+            animation: check-animation .5s forwards;
+            background-color: hsl(0, 0%, 96%);
+        }
+
+        @keyframes check-animation {
+            0% {
+                transform: translate(0px, 0px);
+            }
+
+            50% {
+                transform: translate(0px, 7px);
+            }
+
+            100% {
+                transform: translate(7px, 7px);
+            }
+        }
+
+        @keyframes check-animation2 {
+            0% {
+                transform: translate(7px, 7px);
+            }
+
+            50% {
+                transform: translate(0px, 7px);
+            }
+
+            100% {
+                transform: translate(0px, 0px);
+            }
+        }
+
+        .love-heart {
+            box-sizing: border-box;
+            position: relative;
+            transform: rotate(-45deg) translate(-50%, -33px) scale(4);
+            display: block;
+            border-color: #545454;
+            cursor: pointer;
+            top: 0;
+        }
+
+        input:checked+.love-heart,
+        input:checked+.love-heart::after,
+        input:checked+.love-heart .bottom {
+            border-color: hsl(347deg 81% 61%);
+            box-shadow: inset 6px -5px 0px 2px hsl(347deg 99% 72%);
+        }
+
+        .love-heart::after,
+        .love-heart .bottom {
+            content: "";
+            display: block;
+            box-sizing: border-box;
+            position: absolute;
+            border-color: #545454;
+        }
+
+        .love-heart::after {
+            right: -9px;
+            transform: rotate(90deg);
+            top: 7px;
+        }
+
+        .love-heart .bottom {
+            width: 11px;
+            height: 11px;
+            border-left: 1px solid;
+            border-bottom: 1px solid;
+            border-color: #545454;
+            left: -1px;
+            top: 5px;
+            border-radius: 0px 0px 0px 5px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* From Uiverse.io by CYBWEBALI */
+        .btn {
+            padding: 20px;
+            /* Adjust padding as needed */
+            width: 200px;
+            /* Allow width to adapt to content */
+            margin: 20px;
+            display: block;
+            /* Use one display property */
+            text-align: center;
+            background: #c7e1f6;
+            border-radius: 10px;
+            box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+                -6px -6px 10px -1px rgba(195, 195, 195, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.045);
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+
+
+        .btn:hover {
+            box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.2),
+                inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
+                -0.5px -0.5px 0px rgba(255, 255, 255, 1),
+                0.5px 0.5px 0px rgba(0, 0, 0, 0.15),
+                0px 12px 10px -10px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* transform: translateY(0.5em); */
+        }
+
+        .btn svg {
+            transition: transform 0.5s;
+        }
+
+        .btn:hover svg {
+            transform: scale(0.9);
+            fill: #333333;
+        }
+
+        /* From Uiverse.io by vikramsinghnegi */
+        .loading {
+            display: none;
+        }
+
+        .loader {
+            position: relative;
+            width: 40px;
+            height: 60px;
+            animation: heartBeat 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .loader:before,
+        .loader:after {
+            content: "";
+            background: red;
+            width: 40px;
+            height: 60px;
+            border-radius: 50px 50px 0 0;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            transform: rotate(45deg);
+            transform-origin: 50% 68%;
+            box-shadow: 5px 4px 5px #0004 inset;
+        }
+
+        .loader:after {
+            transform: rotate(-45deg);
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(0.95);
+            }
+
+            5% {
+                transform: scale(1.1);
+            }
+
+            39% {
+                transform: scale(0.85);
+            }
+
+            45% {
+                transform: scale(1);
+            }
+
+            60% {
+                transform: scale(0.95);
+            }
+
+            100% {
+                transform: scale(0.9);
+            }
+        }
+
+        .editor-container {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            background: #252526;
+            border-right: 2px solid #444;
+            box-shadow: 0px 0px 2px 2px grey;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #editor {
+            flex-grow: 1;
+            height: 100%;
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+
+        #editor {
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            /* Ensures text starts from the left */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- From Uiverse.io by LilaRest -->
+
+    <div style="display: flex">
+
+        <div>
+            <div class="card card-result">
+                <div class="card-overlay"></div>
+                <div class="card-inner" style="display: flex; align-items: center; justify-content: center;">
+                    <h1 class="result">ECG Image Classifier</h1>
+                    <!-- From Uiverse.io by vikramsinghnegi -->
+                    <span class="loader loading"></span>
+
+
+                </div>
+            </div>
+
+
+            <div class="card card-upload">
+                <div class="card-overlay"></div>
+                <div class="card-inner">
+
+                    <label for="fileInput" class="btn" id="fileLabel">
+                        Click to import image
+                    </label>
+                    <input type="file" id="fileInput" accept="image/*" onchange="updateFileName()">
+                    </input>
+
+                    <!-- From Uiverse.io by barisdogansutcu -->
+                    <div class="love">
+                        <input id="switch" type="checkbox" onclick="uploadImage()">
+                        <label class="love-heart" for="switch">
+                            <i class="left"></i>
+                            <i class="right"></i>
+                            <i class="bottom"></i>
+                            <div class="round"></div>
+                        </label>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- From Uiverse.io by LilaRest -->
+        <div class="card1">
+            <div class="card-overlay1"></div>
+            <div class="card-inner1"
+                style="padding-left: 60px; text-align: center; display: flex; justify-content: center;">Press Heart To
+                Check
+                Normal or Abnormal
+            </div>
+        </div>
+
+    </div>
+
+    <div style=" margin-top: 25px; margin-bottom: 10px;">
+
+        <!-- <div class="card card-source">
+            <div class="card-overlay"></div>
+            <div class="card-inner" style="display: flex; justify-content: center; font-size: 35px;">Working
+            </div>
+        </div> -->
+
+        <div style="display:flex;">
+            <div class="card1">
+                <div class="card-overlay1"></div>
+                <div class="card-inner1" style="text-align: center; display: flex; justify-content: center;">
+                    <div id="editor"></div>
+                </div>
+            </div>
+
+            <div class="card card-file">
+                <div class="card-overlay"></div>
+                <div class="card-inner"
+                    style="display: flex; justify-content: center; flex-direction: column;">
+
+
+                    <div class="tabs">
+                        <div class="tab active"></div>
+                    </div>
+
+                    <h2 style="margin: 0 0 10px 0; font-size: 38px; color: #353333;">Model Metrics</h2>
+                    <ul id="metrics-list"
+                        style="list-style: none; padding: 5px; font-size: 30px; color: #413e3e; text-align: left;">
+                        <li><strong>Accuracy:</strong> <span id="accuracy">N/A</span></li>
+                        <li><strong>Precision:</strong> <span id="precision">N/A</span></li>
+                        <li><strong>Recall:</strong> <span id="recall">N/A</span></li>
+                        <li><strong>F1-Score:</strong> <span id="f1_score">N/A</span></li>
+                        <li><strong>R² Score:</strong> <span id="r2_score">N/A</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <script>
+        console.dir(document.querySelector("#switch"));
+        let result = document.querySelector(".result");
+        let fileInput = document.getElementById('fileInput');
+        let loader = document.querySelector(".loading"); // Get loader element
+
+        function uploadImage() {
+            if (fileInput.files.length === 0) {
+                alert('Please select an image.');
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            let formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            // Show loader and clear result before sending request
+            loader.style.display = "block";
+            result.innerText = "";
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.label === "Normal") {
+                        result.innerText = `${data.label}: (${data.confidence})`;
+                        confetti();
+                        confetti();
+                        confetti();
+                        confetti();
+                    } else {
+                        result.innerText = `${data.label}: (${data.confidence})`;
+                    }
+
+                    // Update metrics in the card-file div
+                    document.getElementById('accuracy').innerText = data.accuracy || 'N/A';
+                    document.getElementById('precision').innerText = data.precision || 'N/A';
+                    document.getElementById('recall').innerText = data.recall || 'N/A';
+                    document.getElementById('f1_score').innerText = data.f1_score || 'N/A';
+                    document.getElementById('r2_score').innerText = data.r2_score || 'N/A';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    result.innerText = 'Error in prediction';
+
+                    // Reset metrics on error
+                    document.getElementById('accuracy').innerText = 'N/A';
+                    document.getElementById('precision').innerText = 'N/A';
+                    document.getElementById('recall').innerText = 'N/A';
+                    document.getElementById('f1_score').innerText = 'N/A';
+                    document.getElementById('r2_score').innerText = 'N/A';
+                })
+                .finally(() => {
+                    // Hide loader once the response is received
+                    loader.style.display = "none";
+                });
+
+            reader.onload = function (e) {
+                // Create a new image element
+                let img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = "100%";
+                img.style.height = "auto";
+
+                // Find the .card1 container and append the image to it
+                let card1 = document.querySelector('.card1');
+                card1.innerHTML = ''; // Clear previous content
+                card1.appendChild(img);
+            };
+
+            // Read the selected file as a data URL
+            reader.readAsDataURL(file);
+        }
+
+        function updateFileName() {
+            let fileLabel = document.getElementById('fileLabel');
+
+            if (fileInput.files.length > 0) {
+                let fileName = fileInput.files[0].name;
+                let lastDot = fileName.lastIndexOf(".");
+
+                let namePart = fileName.substring(0, lastDot);
+                let extPart = fileName.substring(lastDot);
+
+                fileLabel.innerHTML = `${namePart}<br><small>${extPart}</small>`;
+            } else {
+                fileLabel.innerHTML = "Upload Image";
+            }
+        }
+
+
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+        let editor;
+        let fileContent = `# ECG Classifier - Minimal Version
+import os
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.model_selection import train_test_split
+from PIL import Image
+import matplotlib.pyplot as plt
+
+# ======================
+# Configuration
+# ======================
+DATA_DIR = "/Users/satyamtomar/Downloads/ecg dataset"
+CLASSES = ["normal", "abnormal"]  # Must match your folder names
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 32
+EPOCHS = 15
+TEST_SIZE = 0.2  # 20% for validation
+MODEL_PATH = "ecg_model.h5"
+
+# ======================
+# Data Preparation
+# ======================
+def load_and_split_data():
+    image_paths = []
+    labels = []
+    
+    for class_idx, class_name in enumerate(CLASSES):
+        class_dir = os.path.join(DATA_DIR, class_name)
+        for img_file in os.listdir(class_dir):
+            if img_file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                image_paths.append(os.path.join(class_dir, img_file))
+                labels.append(class_idx)
+    
+    # Split into train and validation sets
+    X_train, X_val, y_train, y_val = train_test_split(
+        image_paths, labels, test_size=TEST_SIZE, random_state=42, stratify=labels
+    )
+    
+    return X_train, X_val, y_train, y_val
+
+# Custom data generator
+class ECGDataGenerator(tf.keras.utils.Sequence):
+    def __init__(self, image_paths, labels, batch_size=BATCH_SIZE, shuffle=True, augment=False):
+        self.image_paths = image_paths
+        self.labels = labels
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.augment = augment
+        self.on_epoch_end()
+        
+        # Simple augmentation
+        self.augmenter = ImageDataGenerator(
+            rotation_range=15,
+            zoom_range=0.1,
+            width_shift_range=0.1,
+            height_shift_range=0.1,
+            horizontal_flip=False
+        )
+    
+    def __len__(self):
+        return int(np.ceil(len(self.image_paths) / self.batch_size))
+    
+    def __getitem__(self, index):
+        batch_paths = self.image_paths[index*self.batch_size:(index+1)*self.batch_size]
+        batch_labels = self.labels[index*self.batch_size:(index+1)*self.batch_size]
+        
+        batch_images = []
+        for img_path in batch_paths:
+            img = Image.open(img_path).convert('RGB')
+            img = img.resize(IMG_SIZE)
+            img_array = np.array(img) / 255.0
+            
+            if self.augment:
+                img_array = self.augmenter.random_transform(img_array)
+            
+            batch_images.append(img_array)
+        
+        return np.array(batch_images), np.array(batch_labels)
+    
+    def on_epoch_end(self):
+        if self.shuffle:
+            combined = list(zip(self.image_paths, self.labels))
+            np.random.shuffle(combined)
+            self.image_paths, self.labels = zip(*combined)
+
+# ======================
+# Model Architecture
+# ======================
+def build_model():
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=IMG_SIZE + (3,),
+        include_top=False,
+        weights='imagenet'
+    )
+    
+    model = models.Sequential([
+        base_model,
+        layers.GlobalAveragePooling2D(),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.3),
+        layers.Dense(1, activation='sigmoid')
+    ])
+    
+    base_model.trainable = False
+    
+    model.compile(
+        optimizer='adam',
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return model
+
+# ======================
+# Training
+# ======================
+def train():
+    X_train, X_val, y_train, y_val = load_and_split_data()
+    
+    train_gen = ECGDataGenerator(X_train, y_train, augment=True)
+    val_gen = ECGDataGenerator(X_val, y_val, augment=False)
+    
+    model = build_model()
+    
+    history = model.fit(
+        train_gen,
+        validation_data=val_gen,
+        epochs=EPOCHS,
+        callbacks=[
+            tf.keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True),
+            tf.keras.callbacks.ModelCheckpoint(MODEL_PATH, save_best_only=True)
+        ]
+    )
+    
+    # Plot training history
+    plt.figure(figsize=(10, 4))
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['accuracy'], label='Train')
+    plt.plot(history.history['val_accuracy'], label='Validation')
+    plt.title('Accuracy')
+    plt.legend()
+    
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['loss'], label='Train')
+    plt.plot(history.history['val_loss'], label='Validation')
+    plt.title('Loss')
+    plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return model
+
+# ======================
+# Prediction
+# ======================
+def predict(image_path):
+    if not os.path.exists(MODEL_PATH):
+        print("Model not found. Training first...")
+        train()
+    
+    model = tf.keras.models.load_model(MODEL_PATH)
+    
+    img = Image.open(image_path).convert('RGB')
+    img = img.resize(IMG_SIZE)
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    
+    prob = model.predict(img_array)[0][0]
+    label = "Normal" if prob < 0.5 else "Abnormal"
+    confidence = (1 - prob) * 100 if label == "Normal" else prob * 100
+    
+    return f"{label} ({confidence:.1f}% confidence)"
+
+# ======================
+# Main Execution
+# ======================
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--train', action='store_true', help='Train the model')
+    parser.add_argument('--predict', type=str, help='Path to ECG image for prediction')
+    
+    args = parser.parse_args()
+    
+    if args.train:
+        print("Starting training...")
+        train()
+        print("Training completed. Model saved to", MODEL_PATH)
+    elif args.predict:
+        print("Prediction:", predict(args.predict))
+    else:
+        print("Please specify --train to train or --predict <image_path> for prediction")`;
+
+        require(["vs/editor/editor.main"], function () {
+            editor = monaco.editor.create(document.getElementById("editor"), {
+                value: fileContent,
+                language: "python",
+                theme: "vs-dark",
+                automaticLayout: true
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
