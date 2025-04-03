@@ -393,14 +393,187 @@
             text-align: left;
             /* Ensures text starts from the left */
         }
+
+        /* Main Styling */
+        .main {
+            height: 780px;
+        }
+
+        .nav {
+            height: 80px;
+            width: 97%;
+            background-color: rgba(55, 51, 51, 0.486);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* Space between left and right */
+            padding: 0 20px;
+            /* position: fixed; */
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        /* Home (Left Side) */
+        .left {
+            text-decoration: none;
+            color: white;
+            font-size: 26px;
+            /* font-weight: bold; */
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        /* Right Side Links */
+        .right {
+            display: flex;
+            gap: 20px;
+            /* Adds space between links */
+        }
+
+        .right a {
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Smooth Scroll Effect */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Dummy Sections for Effect */
+        section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 200px;
+            font-weight: bold;
+        }
+
+        /* From Uiverse.io by vishnu1100 */
+        /* Specific styles for .container */
+        .container1 {
+            background: #9a9090 none repeat scroll 0 0;
+            color: #9a9090;
+            font-size: 100%;
+            line-height: 100px;
+            margin: 0 auto;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        /* Specific styles for .heart-rate container */
+        .container1 .heart-rate {
+            width: 450px;
+            height: 373px;
+            position: relative;
+            margin: 35px auto;
+           
+        }
+
+        /* Styles for the fade-in animation */
+        .container1 .heart-rate .fade-in {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #9a9090;
+            top: 0;
+            right: 0;
+            animation: heartRateIn 2.5s linear infinite;
+        }
+
+        /* Styles for the fade-out animation */
+        .container1 .heart-rate .fade-out {
+            position: absolute;
+            width: 120%;
+            /* Adjusted width to ensure animation space */
+            height: 100%;
+            background-color: #9a9090;
+            top: 0;
+            right: -120%;
+            animation: heartRateOut 2.5s linear infinite;
+        }
+
+        /* Keyframes for the heartRateIn animation */
+        @keyframes heartRateIn {
+            0% {
+                width: 100%;
+            }
+
+            50% {
+                width: 0;
+            }
+
+            100% {
+                width: 0;
+            }
+        }
+
+        /* Keyframes for the heartRateOut animation */
+        @keyframes heartRateOut {
+            0% {
+                left: -120%;
+            }
+
+            30% {
+                left: -120%;
+            }
+
+            100% {
+                left: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
     <!-- From Uiverse.io by LilaRest -->
 
-    <div style="display: flex">
+    <div class="main">
+        <div class="nav">
+            <a href="#main" class="left">CardioScan</a>
+            <div class="right">
+                <a href="#predict">Predict</a>
+                <a href="#code">Source Code</a>
+            </div>
+        </div>
+        <!-- From Uiverse.io by vishnu1100 -->
+        <section>
+            <div class="container1" style="margin-left: 600px">
+                <div class="content">
+                    <div class="heart-rate">
+                        <svg xml:space="preserve" viewBox="0 0 150 73" height="150px" margin-left="10px" width="300px" y="0px" x="0px"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.0">
+                            <polyline points="0,45.486 38.514,45.486 44.595,33.324 50.676,45.486 57.771,45.486 62.838,55.622 71.959,9 80.067,
+                            63.729 84.122,45.486 97.297,45.486 103.379,40.419 110.473,45.486 150,45.486"
+                                stroke-miterlimit="10" stroke-width="3" stroke="#D32F2F" fill="none"></polyline>
 
+                        </svg>
+
+                        <div class="fade-in"></div>
+
+                        <div class="fade-out"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+
+    <div id="predict" style="display: flex">
         <div>
             <div class="card card-result">
                 <div class="card-overlay"></div>
@@ -453,7 +626,7 @@
 
     </div>
 
-    <div style=" margin-top: 25px; margin-bottom: 10px;">
+    <div id="code" style=" margin-top: 25px; margin-bottom: 10px;">
 
         <!-- <div class="card card-source">
             <div class="card-overlay"></div>
@@ -471,8 +644,7 @@
 
             <div class="card card-file">
                 <div class="card-overlay"></div>
-                <div class="card-inner"
-                    style="display: flex; justify-content: center; flex-direction: column;">
+                <div class="card-inner" style="display: flex; justify-content: center; flex-direction: column;">
 
 
                     <div class="tabs">
@@ -800,6 +972,18 @@ if __name__ == "__main__":
             });
         });
 
+        // Optional: Enhance smooth scrolling effect
+        document.querySelectorAll('.nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (event) {
+                event.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                window.scrollTo({
+                    top: targetElement.offsetTop - 50, // Adjust offset for navbar height
+                    behavior: 'smooth'
+                });
+            });
+        });
     </script>
 
 </body>
