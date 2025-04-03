@@ -9,12 +9,14 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.3.0/dist/dotlottie-wc.js" type="module"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 
     <style>
         body {
             font-family: Arial, sans-serif;
             /* height: 100vh; */
-            background-color: #9a9090;
+            background-color: #f1eded;
         }
 
         .container {
@@ -55,13 +57,13 @@
             margin: 50px;
             width: 450px;
             --bg: #e8e8e8;
-            --contrast: #d5cece;
+            --contrast: #e0cfcf;
             --grey: #84a0a0;
             position: relative;
             padding: 9px;
             background-color: var(--bg);
             border-radius: 35px;
-            box-shadow: rgba(50, 50, 93, 0.42) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            box-shadow: rgba(24, 24, 48, 0.42) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(7, 26, 45, 0.35) 0px -2px 6px 0px inset;
         }
 
         .card-overlay {
@@ -116,13 +118,13 @@
             width: 900px;
             height: 595px;
             --bg: #e8e8e8;
-            --contrast: #d5cece;
+            --contrast: #e0cfcf;
             --grey: #84a0a0;
             position: relative;
             padding: 9px;
             background-color: var(--bg);
             border-radius: 35px;
-            box-shadow: rgba(30, 30, 55, 0.352) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+            box-shadow: rgba(24, 24, 48, 0.42) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(7, 26, 45, 0.35) 0px -2px 6px 0px inset;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -402,7 +404,7 @@
         .nav {
             height: 80px;
             width: 97%;
-            background-color: rgba(55, 51, 51, 0.486);
+            background-color: rgba(255, 255, 255, 0.803);
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -418,7 +420,7 @@
         /* Home (Left Side) */
         .left {
             text-decoration: none;
-            color: white;
+            color: #504d4d;
             font-size: 26px;
             /* font-weight: bold; */
             padding: 10px 15px;
@@ -435,8 +437,9 @@
 
         .right a {
             text-decoration: none;
-            color: white;
-            font-size: 20px;
+            color: #363333;
+            font-size: 22px;
+            background: rgba(214, 214, 214, 0.23);
             font-weight: bold;
             padding: 10px 15px;
             border-radius: 10px;
@@ -444,7 +447,7 @@
         }
 
         .nav a:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(81, 81, 81, 0.23);
         }
 
         /* Smooth Scroll Effect */
@@ -465,8 +468,8 @@
         /* From Uiverse.io by vishnu1100 */
         /* Specific styles for .container */
         .container1 {
-            background: #9a9090 none repeat scroll 0 0;
-            color: #9a9090;
+            background: #edebe8 none repeat scroll 0 0;
+            color: #edebe8;
             font-size: 100%;
             line-height: 100px;
             margin: 0 auto;
@@ -480,7 +483,7 @@
             height: 373px;
             position: relative;
             margin: 35px auto;
-           
+
         }
 
         /* Styles for the fade-in animation */
@@ -488,7 +491,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-color: #9a9090;
+            background-color: #edebe8;
             top: 0;
             right: 0;
             animation: heartRateIn 2.5s linear infinite;
@@ -500,7 +503,7 @@
             width: 120%;
             /* Adjusted width to ensure animation space */
             height: 100%;
-            background-color: #9a9090;
+            background-color: #edebe8;
             top: 0;
             right: -120%;
             animation: heartRateOut 2.5s linear infinite;
@@ -544,13 +547,15 @@
     <div class="main">
         <div class="nav">
             <a href="#main" class="left">CardioScan</a>
+            <dotlottie-player src="https://lottie.host/1abcb460-93f9-4d40-8e94-f4dd0ffc9b15/KxBGl6kpJ0.lottie"
+            background="transparent" speed="1" style="width: 50px; height: 50px; margin-left: -850px;" loop autoplay></dotlottie-player>
             <div class="right">
                 <a href="#predict">Predict</a>
                 <a href="#code">Source Code</a>
             </div>
         </div>
         <!-- From Uiverse.io by vishnu1100 -->
-        <section>
+        <!-- <section>
             <div class="container1" style="margin-left: 600px">
                 <div class="content">
                     <div class="heart-rate">
@@ -568,7 +573,12 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
+
+       
+
+        <dotlottie-wc style="width: 50%; height: 50%; margin: 0 auto; margin-top: 160px" src="https://lottie.host/4400bf9f-2ce1-4740-b9bb-adfe80fdf618/O7v8MTOhEE.lottie" autoplay loop>
+        </dotlottie-wc>
 
 
     </div>
